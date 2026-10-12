@@ -12,6 +12,11 @@ function playSound(file) {
   audio.muted = false;
   audio.volume = 1;
   audio.play();
+
+  setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0;
+  }, 10000);
 }
 
 window.addEventListener("load", async () => {
@@ -42,12 +47,12 @@ newGame.addEventListener("click", () => {
     box.innerText = "";
     box.disabled = false;
   });
+  playSound("start");
   win.classList.add("hide");
   resetGame.style.display = "block";
   count = 0;
   gameOver = false;
   playerO = true;
-  //playSound("gameStart");
 });
 
 resetGame.addEventListener("click", () => {
@@ -58,7 +63,6 @@ resetGame.addEventListener("click", () => {
   count = 0;
   gameOver = false;
   playerO = true;
-  //playSound("gameRefresh");
   playSound("refresh");
 });
 
@@ -102,6 +106,7 @@ boxs.forEach((box) => {
     if (count === 9 && !gameOver) {
       para.innerText = "Match Draw Plaese Try Again!";
       resetGame.style.display = "none";
+      playSound("drow");
       win.classList.remove("hide");
     }
   });
