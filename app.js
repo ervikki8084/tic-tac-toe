@@ -4,81 +4,105 @@ let para = document.querySelector("p");
 let newGame = document.querySelector("#new-game");
 let resetGame = document.querySelector("#reset-game");
 
+// audieo trigger function
+function playSound(file) {
+  const audio = new Audio(`./audios/${file}.mp3`);
+  audio.loop = false;
+  audio.currentTime = 0;
+  audio.muted = false;
+  audio.volume = 1;
+  audio.play();
+}
+
+window.addEventListener("load", async () => {
+  try {
+    await playSound("pageRefresh");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 let playerO = true;
 let count = 0;
 let gameOver = false;
 
 let winnerPattern = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
 ];
 
-newGame.addEventListener("click" , () => {
-    boxs.forEach((box) => {
-        box.innerText = "";
-        box.disabled = false;
-    });
-    win.classList.add("hide");
-    resetGame.style.display = "block";
-    count = 0;
-    gameOver = false;
-    playerO = true;
+newGame.addEventListener("click", () => {
+  boxs.forEach((box) => {
+    box.innerText = "";
+    box.disabled = false;
+  });
+  win.classList.add("hide");
+  resetGame.style.display = "block";
+  count = 0;
+  gameOver = false;
+  playerO = true;
+  //playSound("gameStart");
 });
 
-resetGame.addEventListener("click" , () => {
-    boxs.forEach((box) => {
-        box.innerText = "";
-        box.disabled = false;
-    });
-    count = 0;
-    gameOver = false;
-    playerO = true;
+resetGame.addEventListener("click", () => {
+  boxs.forEach((box) => {
+    box.innerText = "";
+    box.disabled = false;
+  });
+  count = 0;
+  gameOver = false;
+  playerO = true;
+  //playSound("gameRefresh");
+  playSound("refresh");
 });
 
 function cheakWinner() {
-    for(let winner of winnerPattern) {
-        let box1 = boxs[winner[0]].innerText;
-        let box2 = boxs[winner[1]].innerText;
-        let box3 = boxs[winner[2]].innerText;
+  for (let winner of winnerPattern) {
+    let box1 = boxs[winner[0]].innerText;
+    let box2 = boxs[winner[1]].innerText;
+    let box3 = boxs[winner[2]].innerText;
 
-        if(box1 !== "" && box2 !== "" && box3 !== "") {
-           if(box1 === box2 && box2 === box3) {
-                para.innerText = `Winner ${box1}`;
-                win.classList.remove("hide");
+    if (box1 !== "" && box2 !== "" && box3 !== "") {
+      if (box1 === box2 && box2 === box3) {
+        para.innerText = `Winner ${box1}`;
+        playSound("winner");
+        win.classList.remove("hide");
 
-                boxs.forEach((box) => {
-                    box.disabled = true;
-                });
-                resetGame.style.display = "none";
-                gameOver = true;
-                return;
-           }
-        }
+        boxs.forEach((box) => {
+          box.disabled = true;
+        });
+        resetGame.style.display = "none";
+        gameOver = true;
+        return;
+      }
     }
+  }
 }
 boxs.forEach((box) => {
-    box.addEventListener("click", () => {
-        if(playerO) {
-            box.innerText = "O";
-            playerO = false;
-        } else {
-            box.innerText = "X";
-            playerO = true;
-        }
-       box.disabled = true;
-       cheakWinner();
-       count++;
+  box.addEventListener("click", () => {
+    if (playerO) {
+      box.innerText = "O";
+      playSound("oPlayer");
+      playerO = false;
+    } else {
+      box.innerText = "X";
+      playSound("xPlayer");
+      playerO = true;
+    }
+    box.disabled = true;
+    cheakWinner();
+    count++;
 
-       if(count === 9 && !gameOver) {
-            para.innerText ="Match Draw Plaese Try Again!";
-            resetGame.style.display = "none";
-            win.classList.remove("hide");
-        }
-    });
+    if (count === 9 && !gameOver) {
+      para.innerText = "Match Draw Plaese Try Again!";
+      resetGame.style.display = "none";
+      win.classList.remove("hide");
+    }
+  });
 });
